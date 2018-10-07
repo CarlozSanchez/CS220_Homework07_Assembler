@@ -1,69 +1,58 @@
-import java.io.*;
-import java.util.ArrayList;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
 public class AssemblerDriver
 {
+
     static Scanner keyboard = new Scanner(System.in);
 
-    public static void main(String[] args)
+    public static void main(String[] args) //throws InvalidSyntaxException
     {
-       // ExecuteProgram();
-       System.out.println(intTo16bitBinary(65535));
-
+        //ExecuteProgram();
+        //System.out.println(intTo16bitBinary(65535));
+        CodeModule codeModule = new CodeModule();
+        codeModule.fillHashTable();
+        System.out.println(codeModule);
     }
 
-    /**
-     * Method: Converts an Integer value into it's equivalent 16-bit binary value.
-     *         Range of 0 - 65,535
-     * @param value
-     * @return
-     */
-    private static String intTo16bitBinary(int value)
+    public static void ExecuteProgram() //throws InvalidSyntaxException
     {
-        int bitValue = 16;
-
-        String intToBinary = Integer.toBinaryString(value);
-
-        int zerosToAdd = bitValue - intToBinary.length();
-
-        StringBuilder sb = new StringBuilder();
-
-        for(int i = 0; i < zerosToAdd; i++)
-        {
-            sb.append("0");
-        }
-
-        sb.append(intToBinary);
-
-        return sb.toString();
-    }
-
-    public static void ExecuteProgram()
-    {
-        System.out.print("Enter Assembly(.asm) File to compile: ");
         String message;
+
+        System.out.println("The files to assemble must be stored in \"/file\" directory");
+        System.out.print("Enter Assembly(.asm) File to compile: ");
         String input = keyboard.nextLine();
+
+        ParserModule parseModule = new ParserModule(input);
 
         try
         {
-            assembleFile(input);
+            parseModule.assembleFile();
             message = "Assemble another .asm file?(Y/N): ";
         }
         catch (IOException e)
         {
             message = "Unable to read from " + input + ", Try again?(Y/N): ";
-            //System.out.println("Unable to read from " + temp + ", Try again?(Y/N): ");
+        }
+        catch(InvalidSyntaxException e)
+        {
+           // message = "Would you like to Try again(Y/N): ";
+           // throw new InvalidSyntaxException(e.getMessage());
+            message = "\n!!!!!!!!!!!! " + e.getMessage() + " !!!!!!!!!!!!!!!!!\n";
+            message += "\nWould you like to Try Again?(Y/N): ";
+
+
         }
 
         System.out.print(message);
         input = keyboard.nextLine();
         System.out.println();
 
-        if(input.equalsIgnoreCase("Y"))
+        if (input.equalsIgnoreCase("Y"))
         {
-            main(null);
+            ExecuteProgram();
         }
         else
         {
@@ -72,96 +61,6 @@ public class AssemblerDriver
 
         //List<String> testList = readFile("TestFile.txt");
         // printList(testList);
-    }
-
-    /***
-     * Method: Reads file
-     * @param fileName
-     * @return
-     */
-    public static void assembleFile(String fileName) throws IOException
-    {
-        ArrayList<String> fileContent = new ArrayList<String>();
-
-        //
-        Scanner inputStream;
-        File file = new File(fileName);
-        inputStream = new Scanner(file);
-
-        System.out.println("Reading from " + file.getName());
-
-        // First Pass
-        while (inputStream.hasNextLine())
-        {
-            String line = inputStream.nextLine().trim();
-
-            line = removeComments(line);
-
-//            if(lineIsComment(line))
-//            {
-//                // Ignore
-//            }
-//            else if(lineIs_Ainstruction(line))
-//            {
-//                // Convert to A-Instruction
-//            }
-//            else if(lineIsC_Instruction(line))
-//            {
-//                // Convert to C-Instruction
-//            }
-
-            //String processedLine = process(inputStream.nextLine());
-
-            //fileContent.add(processedLine);
-
-            if(line != null)
-            {
-                fileContent.add(line);
-            }
-        }
-
-        inputStream.close();
-
-        // DEBUG:
-       // printList(fileContent);
-
-        writeFileAssembly(fileContent, fileName);
-    }
-
-
-    /***
-     * Method: Removes // comments from a given line.
-     * @param line
-     * @return
-     */
-    private static String removeComments(String line)
-    {
-        char forwardSlash = '/';
-
-        if(line.length() > 1)
-        {
-            // case: first 2 characters are forward slash.
-            if(line.charAt(0) == forwardSlash && line.charAt(1) == forwardSlash)
-            {
-                return null;
-            }
-
-            // case: 2 forward slashes appears some time after the first character.
-            for (int i = 1; i < line.length(); i++)
-            {
-                if(line.charAt(i) == forwardSlash && line.charAt(i-1) == forwardSlash)
-                {
-                    return line.substring(0, i-1).trim();
-                }
-            }
-        }
-
-        return line.trim();
-    }
-
-    private boolean lineIsComment(String line)
-    {
-        return false;
     }
 
 
@@ -191,40 +90,31 @@ public class AssemblerDriver
     }
 
 
-    public static void writeFileAssembly(List<String> list, String fileName)
+    /**
+     * Method: Converts an Integer value into it's equivalent 16-bit binary value.
+     * Range of 0 - 65,535
+     *
+     * @param value
+     * @return
+     */
+    private static String intTo16bitBinary(int value)
     {
+        int bitValue = 16;
 
-        String newFileName = fileName.substring(0, fileName.length() - 4) + ".hack";
+        String intToBinary = Integer.toBinaryString(value);
 
-        //Create object(stream) for output using the FileOutputStream class
-        PrintWriter outputStream = null;
+        int zerosToAdd = bitValue - intToBinary.length();
 
-        try
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < zerosToAdd; i++)
         {
-            outputStream = new PrintWriter(new FileOutputStream(newFileName));
+            sb.append("0");
         }
 
-        //Check to see if file can be created or exists. If not, end program
-        catch (FileNotFoundException e)
-        {
-            System.out.println("Error opening the file dataFile.");
-            System.exit(0);
-        }
+        sb.append(intToBinary);
 
-
-        //Tell user you are writing out to file
-        System.out.println("Writing to file.......");
-
-        //Write out to file
-        for(String string : list)
-        {
-            outputStream.println(string);
-        }
-
-        //Close output file
-        outputStream.close();
-
-        System.out.println("Process Complete, File saved as " + newFileName);
+        return sb.toString();
     }
 
 }
