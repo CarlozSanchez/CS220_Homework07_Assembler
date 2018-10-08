@@ -67,6 +67,7 @@ public class ParserModule
      */
     public void assembleFile() throws IOException, InvalidSyntaxException, NumberFormatException
     {
+
         counter = 0;
         Scanner inputStream = new Scanner(file);
 
@@ -79,8 +80,9 @@ public class ParserModule
             CommandType command = null;
 
             String line = removeComments(inputStream.nextLine().trim());
+           // boolean validLine = line != null && line.length() != 0;
 
-            if (line != null && line.length() != 0)
+            if (!line.isEmpty())
             {
                 command = commandType(line);
 
@@ -97,8 +99,8 @@ public class ParserModule
                         break;
 
                     case C_COMMAND:
-                        line += "  <- This is a C Command";
-                        //line = processC(line);
+                        //line += "  <- This is a C Command";
+                        line = processC(line);
                         break;
 
                     case L_COMMAND:
@@ -141,15 +143,29 @@ public class ParserModule
         catch(NumberFormatException e)
         {
             // !!!! implements look up variables in table
+            return line;
         }
 
-            return null;
+           // return null;
     }
 
     private String processC(String line)
     {
-        String temp = "";
-        return temp;
+        String[] assignment = line.split("=");
+
+        if(assignment.length == 2)
+        {
+           // return "111" +
+        }
+
+        assignment = line.split(";");
+        if(assignment.length == 2)
+        {
+
+        }
+
+        return line;
+
     }
 
     private String processL(String line)
@@ -195,7 +211,7 @@ public class ParserModule
             // case: first 2 characters are forward slash.
             if (line.charAt(0) == FORWARD_SLASH && line.charAt(1) == FORWARD_SLASH)
             {
-                return null;
+                return "";
             }
 
             // case: 2 forward slashes appears some time after the first character.
@@ -208,7 +224,7 @@ public class ParserModule
             }
         }
 
-        return line.trim();
+        return line;
     }
 
 

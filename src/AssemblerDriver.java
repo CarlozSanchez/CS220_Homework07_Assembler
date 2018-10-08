@@ -10,8 +10,21 @@ public class AssemblerDriver
 
     public static void main(String[] args) //throws InvalidSyntaxException
     {
-        //ExecuteProgram();
-        test();
+       // ExecuteProgram();
+       // test();
+        testSplit();
+
+    }
+
+    private static void testSplit()
+    {
+        String str = "D*A";
+        String[] result = str.split("=");
+
+        for(int i = 0; i < result.length; i++)
+        {
+            System.out.println(i + ": " + result[i]);
+        }
 
     }
 
