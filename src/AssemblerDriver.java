@@ -19,7 +19,6 @@ public class AssemblerDriver
     {
         //System.out.println(intTo16bitBinary(65535));
         CodeModule codeModule = new CodeModule();
-        codeModule.fillHashTable();
         System.out.println(codeModule);
 
         String mnemonic = "R1";

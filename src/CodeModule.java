@@ -32,6 +32,8 @@ public class CodeModule
         labelHashMap = new HashMap<String, String>();
 
         writeState = WriteState.COMP;
+
+        this.fillHashTable();
     }
 
     public String dest(String mnemonic)
@@ -77,6 +79,8 @@ public class CodeModule
             int end = 6;
 
             line = inputStream.nextLine().trim();
+
+
             if(!line.isEmpty() && line.charAt(0) == '/' && line.charAt(1) == '/')
             {
                 if(line.substring(begin, end).equalsIgnoreCase("comp"))
@@ -129,6 +133,45 @@ public class CodeModule
         addRegistersToTable();
     }
 
+
+    private void addRegistersToTable()
+    {
+        for(int i = 0; i < 16; i++)
+        {
+            String key = "R" + i;
+            String value = intTo16bitBinary(i);
+            labelHashMap.put(key, value);
+        }
+    }
+
+    /**
+     * Method: Converts an Integer value into it's equivalent 16-bit binary value.
+     * Range of 0 - 65,535
+     *
+     * @param value
+     * @return
+     */
+    public static String intTo16bitBinary(int value)
+    {
+        int bitValue = 16;
+
+        String intToBinary = Integer.toBinaryString(value);
+
+        int zerosToAdd = bitValue - intToBinary.length();
+
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < zerosToAdd; i++)
+        {
+            sb.append("0");
+        }
+
+        sb.append(intToBinary);
+
+        return sb.toString();
+    }
+
+
     public String toString()
     {
         StringBuilder sb  = new StringBuilder();
@@ -176,49 +219,4 @@ public class CodeModule
 
         return sb.toString();
     }
-
-    private void addRegistersToTable()
-    {
-        for(int i = 0; i < 16; i++)
-        {
-            String key = "R" + i;
-            String value = intTo16bitBinary(i);
-            labelHashMap.put(key, value);
-        }
-    }
-
-//    public static String intTo16bitBinary(String value) throws NumberFormatException
-//    {
-//        int num  = Integer.parseInt(value);
-//
-//        return intTo16bitBinary(num);
-//    }
-
-    /**
-     * Method: Converts an Integer value into it's equivalent 16-bit binary value.
-     * Range of 0 - 65,535
-     *
-     * @param value
-     * @return
-     */
-    public static String intTo16bitBinary(int value)
-    {
-        int bitValue = 16;
-
-        String intToBinary = Integer.toBinaryString(value);
-
-        int zerosToAdd = bitValue - intToBinary.length();
-
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < zerosToAdd; i++)
-        {
-            sb.append("0");
-        }
-
-        sb.append(intToBinary);
-
-        return sb.toString();
-    }
-
 }
