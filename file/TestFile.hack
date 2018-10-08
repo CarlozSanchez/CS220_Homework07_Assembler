@@ -1,26 +1,7 @@
-@25676  <- This is an A Command
-@2  <- This is an A Command
+0110010001001100
+0000000000000010
 D=A  <- This is a C Command
-@3  <- This is an A Command
+0000000000000011
 D=D+A  <- This is a C Command
-@0  <- This is an A Command
+0000000000000000
 M=D  <- This is a C Command
-@R0  <- This is an A Command
-D=M  <- This is a C Command
-@R1  <- This is an A Command
-D=D-M  <- This is a C Command
-@OUTPUT_FIRST  <- This is an A Command
-D;JGT  <- This is a C Command
-@R1  <- This is an A Command
-D=M  <- This is a C Command
-@OUTPUT_D  <- This is an A Command
-0;JMP  <- This is a C Command
-(OUTPUT_FIRST)  <- This is an L Command
-@R0  <- This is an A Command
-D=M  <- This is a C Command
-(OUTPUT_D)  <- This is an L Command
-@R2  <- This is an A Command
-M=D  <- This is a C Command
-(INFINITE_LOOP)  <- This is an L Command
-@INFINITE_LOOP  <- This is an A Command
-0;JMP  <- This is a C Command

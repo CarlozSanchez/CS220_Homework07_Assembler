@@ -65,7 +65,7 @@ public class ParserModule
      *
      * @throws IOException
      */
-    public void assembleFile() throws IOException, InvalidSyntaxException
+    public void assembleFile() throws IOException, InvalidSyntaxException, NumberFormatException
     {
         counter = 0;
         Scanner inputStream = new Scanner(file);
@@ -92,21 +92,29 @@ public class ParserModule
                 switch (command)
                 {
                     case A_COMMAND:
-                        line += "  <- This is an A Command";
+                       // line += "  <- This is an A Command";
+                        line = processA(line);
                         break;
 
                     case C_COMMAND:
                         line += "  <- This is a C Command";
+                        //line = processC(line);
                         break;
 
                     case L_COMMAND:
                         line += "  <- This is an L Command";
+                        //line = processL(line);
                         break;
 
                     default:
-                        line += "  <- Unkown Command";
+                        //line += "  <- Unkown Command";
                         System.out.println("Unkown Command ");
                         break;
+                }
+
+                if(line == null)
+                {
+                    throw new InvalidSyntaxException(counter);
                 }
 
                 fileContent.add(line);
@@ -120,6 +128,34 @@ public class ParserModule
         // printList(fileContent);
 
         writeFileAssembly(fileContent, file.getName());
+    }
+
+    private String processA(String line) //throws NumberFormatException
+    {
+        int address;
+
+        try{
+            address = Integer.parseInt(line.substring(1, line.length()));
+            return CodeModule.intTo16bitBinary(address);
+        }
+        catch(NumberFormatException e)
+        {
+            // !!!! implements look up variables in table
+        }
+
+            return null;
+    }
+
+    private String processC(String line)
+    {
+        String temp = "";
+        return temp;
+    }
+
+    private String processL(String line)
+    {
+        String temp = "";
+        return temp;
     }
 
     private CommandType commandType(String line)

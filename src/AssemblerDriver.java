@@ -11,11 +11,21 @@ public class AssemblerDriver
     public static void main(String[] args) //throws InvalidSyntaxException
     {
         //ExecuteProgram();
+        test();
+
+    }
+
+    private static void test()
+    {
         //System.out.println(intTo16bitBinary(65535));
         CodeModule codeModule = new CodeModule();
         codeModule.fillHashTable();
         System.out.println(codeModule);
+
+        String mnemonic = "R1";
+        System.out.println("Translating  " + mnemonic + ": " + codeModule.label(mnemonic));
     }
+
 
     public static void ExecuteProgram() //throws InvalidSyntaxException
     {
@@ -90,31 +100,5 @@ public class AssemblerDriver
     }
 
 
-    /**
-     * Method: Converts an Integer value into it's equivalent 16-bit binary value.
-     * Range of 0 - 65,535
-     *
-     * @param value
-     * @return
-     */
-    private static String intTo16bitBinary(int value)
-    {
-        int bitValue = 16;
-
-        String intToBinary = Integer.toBinaryString(value);
-
-        int zerosToAdd = bitValue - intToBinary.length();
-
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < zerosToAdd; i++)
-        {
-            sb.append("0");
-        }
-
-        sb.append(intToBinary);
-
-        return sb.toString();
-    }
 
 }
