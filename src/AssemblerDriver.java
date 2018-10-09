@@ -10,14 +10,15 @@ public class AssemblerDriver
 
     public static void main(String[] args) //throws InvalidSyntaxException
     {
-        ExecuteProgram();
-       // test();
+        //ExecuteProgram();
+        test();
        // testSplit();
 
     }
 
     private static void testSplit()
     {
+
         String str = "D*A";
         String[] result = str.split("=");
 
@@ -36,6 +37,9 @@ public class AssemblerDriver
 
         String mnemonic = "R1";
         System.out.println("Translating  " + mnemonic + ": " + codeModule.label(mnemonic));
+
+        String test = "//Destination";
+        System.out.println(test.substring(2, 6));
     }
 
 

@@ -10,9 +10,11 @@ import java.util.Scanner;
  * + dest(input : String) : String
  * + comp(input : String) : String
  * + jump(input : String) : String
- *
  */
-enum WriteState{DEST, JUMP, COMP, LABEL}
+enum WriteState
+{
+    DEST, JUMP, COMP, LABEL
+}
 
 public class CodeModule
 {
@@ -21,8 +23,6 @@ public class CodeModule
     private HashMap<String, String> jumpHashMap;
     private HashMap<String, String> labelHashMap;
 
-    WriteState writeState;
-
 
     public CodeModule()
     {
@@ -30,8 +30,6 @@ public class CodeModule
         compHashMap = new HashMap<String, String>();
         jumpHashMap = new HashMap<String, String>();
         labelHashMap = new HashMap<String, String>();
-
-        writeState = WriteState.COMP;
 
         this.fillHashTable();
     }
@@ -66,48 +64,47 @@ public class CodeModule
 
         try
         {
-             inputStream = new Scanner(file);
+            inputStream = new Scanner(file);
         }
-        catch(IOException e)
+        catch (IOException e)
         {
             System.out.println("Unable to build hash table from " + file.getName());
         }
 
-        while(inputStream.hasNextLine())
-        {
-            int begin = 2;
-            int end = 6;
+        WriteState writeState = WriteState.COMP;
 
+        while (inputStream.hasNextLine())
+        {
             line = inputStream.nextLine().trim();
 
 
-            if(!line.isEmpty() && line.charAt(0) == '/' && line.charAt(1) == '/')
+            if (!line.isEmpty() && line.contains("//"))
             {
-                if(line.substring(begin, end).equalsIgnoreCase("comp"))
+                if (line.contains("Comp"))
                 {
                     //System.out.println("debug: " + line.substring(begin, end));
                     writeState = WriteState.COMP;
                 }
-                else if(line.substring(begin,end).equalsIgnoreCase("dest"))
+                else if (line.contains("Dest"))
                 {
                     writeState = WriteState.DEST;
                 }
 
-                else if(line.substring(begin, end).equalsIgnoreCase("jump"))
+                else if (line.contains("Jump"))
                 {
                     writeState = WriteState.JUMP;
                 }
-                else if(line.substring(begin, end).equalsIgnoreCase("labe"))
+                else if (line.contains("Labels"))
                 {
                     writeState = WriteState.LABEL;
                 }
             }
 
-            if( !line.isEmpty() && line.charAt(0) != '/' && line.charAt(1) != '/')
+            if (!line.isEmpty() && !line.contains("//"))
             {
                 String[] lineArray = line.split("_");
 
-                switch(writeState)
+                switch (writeState)
                 {
                     case COMP:
                         compHashMap.put(lineArray[0], lineArray[1]);
@@ -123,9 +120,11 @@ public class CodeModule
 
                     case LABEL:
                         labelHashMap.put(lineArray[0], lineArray[1]);
+                        break;
 
-                        default:
-                            System.out.println("Unkown Write State");
+                    default:
+                        //System.out.println("Debug: " + line + "WriteState: " + writeState);
+                        System.out.println("Unkown Write State");
                 }
             }
         }
@@ -136,7 +135,7 @@ public class CodeModule
 
     private void addRegistersToTable()
     {
-        for(int i = 0; i < 16; i++)
+        for (int i = 0; i < 16; i++)
         {
             String key = "R" + i;
             String value = intTo16bitBinary(i);
@@ -158,9 +157,9 @@ public class CodeModule
 
         StringBuilder str = new StringBuilder();
 
-        for(int i = 0; i < 15; i++)
+        for (int i = 0; i < 15; i++)
         {
-            if( toConvert % 2 == 0)
+            if (toConvert % 2 == 0)
             {
                 str.append(0);
             }
@@ -173,7 +172,6 @@ public class CodeModule
         }
 
         return str.reverse().toString();
-
 
 
 //        str.reverse();
@@ -197,20 +195,20 @@ public class CodeModule
 
     public String toString()
     {
-        StringBuilder sb  = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
         sb.append("--- Comp HashMap ---\n");
-        for(String key : compHashMap.keySet())
+        for (String key : compHashMap.keySet())
         {
             String str = String.format("%-5s | %s\n", key, compHashMap.get(key));
-           // sb.append(key + " | " + hashMap.get(key) + "\n");
+            // sb.append(key + " | " + hashMap.get(key) + "\n");
             sb.append(str);
 
         }
         sb.append("\n");
 
         sb.append("--- Dest HashMap ---\n");
-        for(String key : destHashMap.keySet())
+        for (String key : destHashMap.keySet())
         {
             String str = String.format("%-5s | %s\n", key, destHashMap.get(key));
             // sb.append(key + " | " + hashMap.get(key) + "\n");
@@ -220,7 +218,7 @@ public class CodeModule
         sb.append("\n");
 
         sb.append("--- Jump HashMap ---\n");
-        for(String key : jumpHashMap.keySet())
+        for (String key : jumpHashMap.keySet())
         {
             String str = String.format("%-5s | %s\n", key, jumpHashMap.get(key));
             // sb.append(key + " | " + hashMap.get(key) + "\n");
@@ -230,7 +228,7 @@ public class CodeModule
         sb.append("\n");
 
         sb.append("--- Label hashMap --\n");
-        for(String key : labelHashMap.keySet())
+        for (String key : labelHashMap.keySet())
         {
             String str = String.format("%-5s | %s\n", key, labelHashMap.get(key));
             // sb.append(key + " | " + hashMap.get(key) + "\n");

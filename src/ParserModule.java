@@ -4,7 +4,6 @@
 // Version 1.00
 
 
-
 import java.io.*;
 import java.net.CookieManager;
 import java.util.ArrayList;
@@ -37,6 +36,7 @@ public class ParserModule
     File file;
     ArrayList<String> fileContent;
     int counter;
+    CodeModule codeModule = new CodeModule();
 
     /***
      * DEFAULT CONSTRUCTOR:
@@ -78,53 +78,43 @@ public class ParserModule
             counter++;
             CommandType command = null;
 
-            String line = removeComments(inputStream.nextLine().trim());
-           // boolean validLine = line != null && line.length() != 0;
+            String line = removeComments(inputStream.nextLine());
 
-            if (!line.isEmpty())
+            command = commandType(line);
+
+            switch (command)
             {
-                command = commandType(line);
+                case N_COMMAND:
+                    // Do nothing
+                    break;
 
-//                if (command == null)
-//                {
-//                    throw new InvalidSyntaxException(counter);
-//                }
+                case A_COMMAND:
+                    // line += "  <- This is an A Command";
+                    line = processA(line);
+                    break;
 
-                switch (command)
-                {
-                    case N_COMMAND:
-                        // Do nothing
-                        break;
+                case C_COMMAND:
+                    //line += "  <- This is a C Command";
+                    line = processC(line, counter);
+                    break;
 
-                    case A_COMMAND:
-                       // line += "  <- This is an A Command";
-                        line = processA(line);
-                        break;
+                case L_COMMAND:
+                    line += "  <- This is an L Command";
+                    //line = processL(line);
+                    break;
 
-                    case C_COMMAND:
-                        //line += "  <- This is a C Command";
-                        line = processC(line);
-                        break;
-
-                    case L_COMMAND:
-                        line += "  <- This is an L Command";
-                        //line = processL(line);
-                        break;
-
-                    default:
-                        //line += "  <- Unkown Command";
-                        System.out.println("Unkown Command ");
-                        break;
-                }
-
-                if(line == null)
-                {
-                    throw new InvalidSyntaxException(counter);
-                }
-
-                fileContent.add(line);
-
+                default:
+                    //line += "  <- Unknown Command";
+                    System.out.println("Unknown Command ");
+                    break;
             }
+
+
+            if (command != CommandType.N_COMMAND)
+            {
+                fileContent.add(line);
+            }
+
         }
 
         inputStream.close();
@@ -139,35 +129,54 @@ public class ParserModule
     {
         int address;
 
-        try{
+        try
+        {
             address = Integer.parseInt(line.substring(1, line.length()));
-            return CodeModule.intTo16bitBinary(address);
+            return "0" + CodeModule.intTo16bitBinary(address);
         }
-        catch(NumberFormatException e)
+        catch (NumberFormatException e)
         {
             // !!!! implements look up variables in table
             return line;
         }
 
-           // return null;
+        // return null;
     }
 
-    private String processC(String line)
+    private String processC(String line, int counter) throws InvalidSyntaxException
     {
-        String[] assignment = line.split("=");
+        String instruction = "111";
+        String comp, dest;
+        String jump = "000";
+        String[] lineSplit = line.split("=");
 
-        if(assignment.length == 2)
+        // Process a computation Command
+        if (lineSplit.length == 2)
         {
-           // return "111" +
+            dest = codeModule.dest(lineSplit[0]);
+            comp = codeModule.comp(lineSplit[1]);
+
+            if(dest != null && comp != null)
+            {
+                return instruction + comp + dest + jump;
+            }
         }
 
-        assignment = line.split(";");
-        if(assignment.length == 2)
+        // Process a Jump Command
+        lineSplit = line.split(";");
+        if (lineSplit.length == 2)
         {
+            dest = codeModule.dest(lineSplit[0]);
+            jump = codeModule.jump(lineSplit[1]);
 
+            if(dest != null && jump != null)
+            {
+                comp = "0000000";
+                return instruction + comp + dest + jump;
+            }
         }
 
-        return line;
+        throw new InvalidSyntaxException(counter);
 
     }
 
@@ -179,7 +188,7 @@ public class ParserModule
 
     private CommandType commandType(String line)
     {
-        if(line == null || line.isEmpty())
+        if (line == null || line.isEmpty())
         {
             return CommandType.N_COMMAND;
         }
@@ -231,16 +240,18 @@ public class ParserModule
 //                }
 //            }
 //        }
+        line = line.replaceAll(" ", "");
+        line = line.replaceAll("\t", "");
+
+
         int commentLocation = line.indexOf("//");
-        if(commentLocation != -1)
+        if (commentLocation != -1)
         {
             line = line.substring(0, commentLocation);
         }
 
 
 
-        line = line.replaceAll(" ", "");
-        line = line.replaceAll("\t", "");
 
         return line;
     }
