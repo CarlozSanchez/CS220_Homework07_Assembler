@@ -4,7 +4,6 @@
 // Version 1.00
 
 
-import jdk.nashorn.internal.runtime.regexp.joni.exception.SyntaxException;
 
 import java.io.*;
 import java.net.CookieManager;
@@ -26,7 +25,7 @@ import java.util.Scanner;
 
 enum CommandType
 {
-    A_COMMAND, C_COMMAND, L_COMMAND
+    A_COMMAND, C_COMMAND, L_COMMAND, N_COMMAND
 }
 
 public class ParserModule
@@ -86,13 +85,17 @@ public class ParserModule
             {
                 command = commandType(line);
 
-                if (command == null)
-                {
-                    throw new InvalidSyntaxException(counter);
-                }
+//                if (command == null)
+//                {
+//                    throw new InvalidSyntaxException(counter);
+//                }
 
                 switch (command)
                 {
+                    case N_COMMAND:
+                        // Do nothing
+                        break;
+
                     case A_COMMAND:
                        // line += "  <- This is an A Command";
                         line = processA(line);
@@ -176,6 +179,10 @@ public class ParserModule
 
     private CommandType commandType(String line)
     {
+        if(line == null || line.isEmpty())
+        {
+            return CommandType.N_COMMAND;
+        }
         if (line.charAt(0) == '@')
         {
             return CommandType.A_COMMAND;
@@ -205,24 +212,35 @@ public class ParserModule
      */
     private static String removeComments(String line)
     {
+        String str;
 
-        if (line.length() > 1)
+//        if (line.length() > 1)
+//        {
+//            // case1: first 2 characters are forward slash.
+//            if (line.charAt(0) == FORWARD_SLASH && line.charAt(1) == FORWARD_SLASH)
+//            {
+//                return "";
+//            }
+//
+//            // case2: forward slashes appears some time after the first character.
+//            for (int i = 1; i < line.length(); i++)
+//            {
+//                if (line.charAt(i) == FORWARD_SLASH && line.charAt(i - 1) == FORWARD_SLASH)
+//                {
+//                    return line.substring(0, i - 1).trim();
+//                }
+//            }
+//        }
+        int commentLocation = line.indexOf("//");
+        if(commentLocation != -1)
         {
-            // case: first 2 characters are forward slash.
-            if (line.charAt(0) == FORWARD_SLASH && line.charAt(1) == FORWARD_SLASH)
-            {
-                return "";
-            }
-
-            // case: 2 forward slashes appears some time after the first character.
-            for (int i = 1; i < line.length(); i++)
-            {
-                if (line.charAt(i) == FORWARD_SLASH && line.charAt(i - 1) == FORWARD_SLASH)
-                {
-                    return line.substring(0, i - 1).trim();
-                }
-            }
+            line = line.substring(0, commentLocation);
         }
+
+
+
+        line = line.replaceAll(" ", "");
+        line = line.replaceAll("\t", "");
 
         return line;
     }
@@ -252,7 +270,6 @@ public class ParserModule
             System.out.println("Error opening the file dataFile.");
             System.exit(0);
         }
-
 
         //Tell user you are writing out to file
         System.out.println("Writing to file.......");

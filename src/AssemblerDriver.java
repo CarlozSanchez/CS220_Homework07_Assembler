@@ -10,9 +10,9 @@ public class AssemblerDriver
 
     public static void main(String[] args) //throws InvalidSyntaxException
     {
-       // ExecuteProgram();
+        ExecuteProgram();
        // test();
-        testSplit();
+       // testSplit();
 
     }
 

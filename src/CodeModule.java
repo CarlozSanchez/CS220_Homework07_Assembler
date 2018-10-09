@@ -145,30 +145,53 @@ public class CodeModule
     }
 
     /**
-     * Method: Converts an Integer value into it's equivalent 16-bit binary value.
+     * Method: Converts an Integer value into it's equivalent 15-bit binary value.
      * Range of 0 - 65,535
      *
-     * @param value
+     * @param
      * @return
      */
-    public static String intTo16bitBinary(int value)
+    public static String intTo16bitBinary(int toConvert)
     {
+
         int bitValue = 16;
 
-        String intToBinary = Integer.toBinaryString(value);
+        StringBuilder str = new StringBuilder();
 
-        int zerosToAdd = bitValue - intToBinary.length();
-
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < zerosToAdd; i++)
+        for(int i = 0; i < 15; i++)
         {
-            sb.append("0");
+            if( toConvert % 2 == 0)
+            {
+                str.append(0);
+            }
+            else
+            {
+                str.append(1);
+            }
+
+            toConvert /= 2;
         }
 
-        sb.append(intToBinary);
+        return str.reverse().toString();
 
-        return sb.toString();
+
+
+//        str.reverse();
+//
+//        String intToBinary = Integer.toBinaryString(value);
+//
+//        int zerosToAdd = bitValue - intToBinary.length();
+//
+//        StringBuilder sb = new StringBuilder();
+//
+//        for (int i = 0; i < zerosToAdd; i++)
+//        {
+//            sb.append("0");
+//        }
+//
+//        sb.append(intToBinary);
+//
+//        return sb.toString();
     }
 
 
