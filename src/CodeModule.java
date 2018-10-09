@@ -30,7 +30,6 @@ public class CodeModule
         compHashMap = new HashMap<String, String>();
         jumpHashMap = new HashMap<String, String>();
         labelHashMap = new HashMap<String, String>();
-
         this.fillHashTable();
     }
 
@@ -55,7 +54,7 @@ public class CodeModule
     }
 
 
-    public void fillHashTable()
+    private void fillHashTable()
     {
         String fileLocation = "file/AssemblyCodeModule.txt";
         File file = new File(fileLocation);
@@ -152,9 +151,6 @@ public class CodeModule
      */
     public static String intTo16bitBinary(int toConvert)
     {
-
-        //int bitValue = 16;
-
         StringBuilder str = new StringBuilder();
 
         for (int i = 0; i < 15; i++)
@@ -172,24 +168,6 @@ public class CodeModule
         }
 
         return str.reverse().toString();
-
-
-//        str.reverse();
-//
-//        String intToBinary = Integer.toBinaryString(value);
-//
-//        int zerosToAdd = bitValue - intToBinary.length();
-//
-//        StringBuilder sb = new StringBuilder();
-//
-//        for (int i = 0; i < zerosToAdd; i++)
-//        {
-//            sb.append("0");
-//        }
-//
-//        sb.append(intToBinary);
-//
-//        return sb.toString();
     }
 
 

@@ -35,15 +35,14 @@ public class ParserModule
 
     File file;
     ArrayList<String> fileContent;
-    int counter;
     CodeModule codeModule = new CodeModule();
+    SymbolTableModule symbolTable = new SymbolTableModule();
 
     /***
      * DEFAULT CONSTRUCTOR:
      */
     public ParserModule()
     {
-        counter = 0;
         file = null;
         fileContent = new ArrayList<String>();
     }
@@ -54,7 +53,6 @@ public class ParserModule
      */
     public ParserModule(String fileName)
     {
-        counter = 0;
         fileContent = new ArrayList<String>();
         file = new File(ROOT + fileName);
     }
@@ -64,10 +62,11 @@ public class ParserModule
      *
      * @throws IOException
      */
-    public void assembleFile() throws IOException, InvalidSyntaxException, NumberFormatException
+    public void assembleFile() throws IOException, NumberFormatException, InvalidSyntaxException
     {
 
-        counter = 0;
+        int asmCounter = 0;
+        int hackCounter = 0;
         Scanner inputStream = new Scanner(file);
 
         System.out.println("Reading from " + file.getName());
@@ -75,7 +74,6 @@ public class ParserModule
         // First Pass
         while (inputStream.hasNextLine())
         {
-            counter++;
             CommandType command = null;
 
             String line = removeComments(inputStream.nextLine());
@@ -91,16 +89,26 @@ public class ParserModule
                 case A_COMMAND:
                     // line += "  <- This is an A Command";
                     line = processA(line);
+                    hackCounter++;
                     break;
 
                 case C_COMMAND:
                     //line += "  <- This is a C Command";
-                    line = processC(line, counter);
+                    try
+                    {
+                        line = processC(line);
+                    }
+                    catch(InvalidSyntaxException e)
+                    {
+                        throw new InvalidSyntaxException(asmCounter);
+                    }
+
+                    hackCounter++;
                     break;
 
                 case L_COMMAND:
-                    line += "  <- This is an L Command";
-                    //line = processL(line);
+                    //line += "  <- This is an L Command";
+                    processL(line, hackCounter);
                     break;
 
                 default:
@@ -110,17 +118,20 @@ public class ParserModule
             }
 
 
-            if (command != CommandType.N_COMMAND)
+            if (command != CommandType.N_COMMAND && command != CommandType.L_COMMAND)
             {
                 fileContent.add(line);
             }
 
+            asmCounter++;
         }
 
         inputStream.close();
 
         // DEBUG:
         // printList(fileContent);
+
+        System.out.println(symbolTable.toString());
 
         writeFileAssembly(fileContent, file.getName());
     }
@@ -143,10 +154,11 @@ public class ParserModule
         // return null;
     }
 
-    private String processC(String line, int counter) throws InvalidSyntaxException
+    private String processC(String line) throws InvalidSyntaxException
     {
         String instruction = "111";
-        String comp, dest;
+        String comp;
+        String dest = "000";
         String jump = "000";
         String[] lineSplit = line.split("=");
 
@@ -166,25 +178,27 @@ public class ParserModule
         lineSplit = line.split(";");
         if (lineSplit.length == 2)
         {
-            dest = codeModule.dest(lineSplit[0]);
+            comp = codeModule.comp(lineSplit[0]);
             jump = codeModule.jump(lineSplit[1]);
 
             if(dest != null && jump != null)
             {
-                comp = "0000000";
                 return instruction + comp + dest + jump;
             }
         }
 
-        throw new InvalidSyntaxException(counter);
-
+        throw new InvalidSyntaxException();
     }
 
-    private String processL(String line)
+    private void processL(String line, int address)
     {
-        String temp = "";
-        return temp;
+        line = line.substring(1, line.length()-1);
+
+        System.out.print("Adding: " + line);
+        symbolTable.put(line, address);
+        //codeModule.addLabel(line, address);
     }
+
 
     private CommandType commandType(String line)
     {
