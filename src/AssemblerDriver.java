@@ -10,9 +10,9 @@ public class AssemblerDriver
 
     public static void main(String[] args) //throws InvalidSyntaxException
     {
-        //ExecuteProgram();
-        test();
-       // testSplit();
+        ExecuteProgram();
+        //test();
+        // testSplit();
 
     }
 
@@ -22,7 +22,7 @@ public class AssemblerDriver
         String str = "D*A";
         String[] result = str.split("=");
 
-        for(int i = 0; i < result.length; i++)
+        for (int i = 0; i < result.length; i++)
         {
             System.out.println(i + ": " + result[i]);
         }
@@ -62,10 +62,10 @@ public class AssemblerDriver
         {
             message = "Unable to read from " + input + ", Try again?(Y/N): ";
         }
-        catch(InvalidSyntaxException e)
+        catch (InvalidSyntaxException e)
         {
-           // message = "Would you like to Try again(Y/N): ";
-           // throw new InvalidSyntaxException(e.getMessage());
+            // message = "Would you like to Try again(Y/N): ";
+            // throw new InvalidSyntaxException(e.getMessage());
             message = "\n!!!!!!!!!!!! " + e.getMessage() + " !!!!!!!!!!!!!!!!!\n";
             message += "\nWould you like to Try Again?(Y/N): ";
 
@@ -114,7 +114,6 @@ public class AssemblerDriver
             System.out.println("Could not print List content");
         }
     }
-
 
 
 }
