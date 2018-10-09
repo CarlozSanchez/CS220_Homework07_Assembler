@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="483ecb4e-39c5-4b37-8ccd-1bc1fd81d962" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/file/TestFile.hack" afterPath="$PROJECT_DIR$/file/TestFile.hack" />
-      <change beforePath="$PROJECT_DIR$/file/TestFile.txt" afterPath="$PROJECT_DIR$/file/TestFile.txt" />
-      <change beforePath="$PROJECT_DIR$/src/AssemblerDriver.java" afterPath="$PROJECT_DIR$/src/AssemblerDriver.java" />
       <change beforePath="$PROJECT_DIR$/src/CodeModule.java" afterPath="$PROJECT_DIR$/src/CodeModule.java" />
-      <change beforePath="$PROJECT_DIR$/src/ParserModule.java" afterPath="$PROJECT_DIR$/src/ParserModule.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -76,8 +69,8 @@
       <file leaf-file-name="CodeModule.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/CodeModule.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-641">
-              <caret line="147" column="64" lean-forward="false" selection-start-line="147" selection-start-column="64" selection-end-line="147" selection-end-column="64" />
+            <state relative-caret-position="672">
+              <caret line="156" column="10" lean-forward="false" selection-start-line="156" selection-start-column="10" selection-end-line="156" selection-end-column="10" />
               <folding />
             </state>
           </provider>
@@ -427,8 +420,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/CodeModule.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-641">
-          <caret line="147" column="64" lean-forward="false" selection-start-line="147" selection-start-column="64" selection-end-line="147" selection-end-column="64" />
+        <state relative-caret-position="672">
+          <caret line="156" column="10" lean-forward="false" selection-start-line="156" selection-start-column="10" selection-end-line="156" selection-end-column="10" />
           <folding />
         </state>
       </provider>

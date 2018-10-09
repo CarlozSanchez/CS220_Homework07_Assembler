@@ -154,7 +154,7 @@ public class CodeModule
     public static String intTo16bitBinary(int toConvert)
     {
 
-        int bitValue = 16;
+        //int bitValue = 16;
 
         StringBuilder str = new StringBuilder();
 
@@ -238,7 +238,6 @@ public class CodeModule
 
         }
         sb.append("\n");
-
 
         return sb.toString();
     }
