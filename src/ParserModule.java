@@ -57,12 +57,20 @@ public class ParserModule
         file = new File(ROOT + fileName);
     }
 
+    public void assembleFile() throws IOException, NumberFormatException, InvalidSyntaxException
+    {
+        List<String> list = firstPass();
+
+
+        writeFileAssembly(list, file.getName());
+
+    }
 
     /***
      *
      * @throws IOException
      */
-    public void assembleFile() throws IOException, NumberFormatException, InvalidSyntaxException
+    public ArrayList<String> firstPass() throws IOException, NumberFormatException, InvalidSyntaxException
     {
 
         int asmCounter = 0;
@@ -127,14 +135,20 @@ public class ParserModule
         }
 
         inputStream.close();
+        return fileContent;
 
         // DEBUG:
         // printList(fileContent);
 
-        System.out.println(symbolTable.toString());
-
-        writeFileAssembly(fileContent, file.getName());
+       // System.out.println(symbolTable.toString());
     }
+
+    private ArrayList<String> secondPass(ArrayList<String> fileContent)
+    {
+        return fileContent;
+    }
+
+
 
     private String processA(String line) //throws NumberFormatException
     {
