@@ -59,11 +59,14 @@ public class ParserModule
 
     public void assembleFile() throws IOException, NumberFormatException, InvalidSyntaxException
     {
-        List<String> list = firstPass();
+        ArrayList<String> list;
 
+        list = firstPass();
+
+        writeFileAssembly(list, "firstPass");
+        list = secondPass(list);
 
         writeFileAssembly(list, file.getName());
-
     }
 
     /***
@@ -84,9 +87,9 @@ public class ParserModule
         {
             CommandType command = null;
 
-            String line = removeComments(inputStream.nextLine());
+            String cleanLine = cleanLine(inputStream.nextLine());
 
-            command = commandType(line);
+            command = commandType(cleanLine);
 
             switch (command)
             {
@@ -96,7 +99,7 @@ public class ParserModule
 
                 case A_COMMAND:
                     // line += "  <- This is an A Command";
-                    line = processA(line);
+                    cleanLine = processA(cleanLine);
                     hackCounter++;
                     break;
 
@@ -104,9 +107,9 @@ public class ParserModule
                     //line += "  <- This is a C Command";
                     try
                     {
-                        line = processC(line);
+                        cleanLine = processC(cleanLine);
                     }
-                    catch(InvalidSyntaxException e)
+                    catch (InvalidSyntaxException e)
                     {
                         throw new InvalidSyntaxException(asmCounter);
                     }
@@ -116,7 +119,7 @@ public class ParserModule
 
                 case L_COMMAND:
                     //line += "  <- This is an L Command";
-                    processL(line, hackCounter);
+                    processL(cleanLine, hackCounter);
                     break;
 
                 default:
@@ -128,7 +131,7 @@ public class ParserModule
 
             if (command != CommandType.N_COMMAND && command != CommandType.L_COMMAND)
             {
-                fileContent.add(line);
+                fileContent.add(cleanLine);
             }
 
             asmCounter++;
@@ -136,36 +139,56 @@ public class ParserModule
 
         inputStream.close();
         return fileContent;
-
-        // DEBUG:
-        // printList(fileContent);
-
-       // System.out.println(symbolTable.toString());
     }
 
     private ArrayList<String> secondPass(ArrayList<String> fileContent)
     {
-        return fileContent;
+        ArrayList<String> arrayList = new ArrayList<String>(fileContent.size());
+
+        for (String str : fileContent)
+        {
+            if (str.charAt(0) == '@')
+            {
+                String symbol = str.substring(1, str.length());
+
+                String address = symbolTable.getAddress(symbol);
+
+                if (address != null)
+                {
+                    arrayList.add("0" + address);
+                }
+            }
+            else
+            {
+                arrayList.add(str);
+            }
+        }
+        return arrayList;
     }
 
 
-
-    private String processA(String line) //throws NumberFormatException
+    private String processA(String line)
     {
-        int address;
+        String subString = line.substring(1, line.length());
 
         try
         {
-            address = Integer.parseInt(line.substring(1, line.length()));
+            int address = Integer.parseInt(subString);
             return "0" + CodeModule.intTo16bitBinary(address);
         }
         catch (NumberFormatException e)
         {
-            // !!!! implements look up variables in table
-            return line;
+            String symbol = codeModule.label(subString);
+            if (symbol != null)
+            {
+                return "0" + symbol;
+            }
+            else
+            {
+                symbolTable.addVariable(subString);
+                return line;
+            }
         }
-
-        // return null;
     }
 
     private String processC(String line) throws InvalidSyntaxException
@@ -182,7 +205,7 @@ public class ParserModule
             dest = codeModule.dest(lineSplit[0]);
             comp = codeModule.comp(lineSplit[1]);
 
-            if(dest != null && comp != null)
+            if (dest != null && comp != null)
             {
                 return instruction + comp + dest + jump;
             }
@@ -195,7 +218,7 @@ public class ParserModule
             comp = codeModule.comp(lineSplit[0]);
             jump = codeModule.jump(lineSplit[1]);
 
-            if(dest != null && jump != null)
+            if (dest != null && jump != null)
             {
                 return instruction + comp + dest + jump;
             }
@@ -206,11 +229,8 @@ public class ParserModule
 
     private void processL(String line, int address)
     {
-        line = line.substring(1, line.length()-1);
-
-        System.out.print("Adding: " + line);
-        symbolTable.put(line, address);
-        //codeModule.addLabel(line, address);
+        line = line.substring(1, line.length() - 1);
+        symbolTable.addEntry(line, address);
     }
 
 
@@ -247,39 +267,16 @@ public class ParserModule
      * @param line
      * @return
      */
-    private static String removeComments(String line)
+    private static String cleanLine(String line)
     {
-        String str;
-
-//        if (line.length() > 1)
-//        {
-//            // case1: first 2 characters are forward slash.
-//            if (line.charAt(0) == FORWARD_SLASH && line.charAt(1) == FORWARD_SLASH)
-//            {
-//                return "";
-//            }
-//
-//            // case2: forward slashes appears some time after the first character.
-//            for (int i = 1; i < line.length(); i++)
-//            {
-//                if (line.charAt(i) == FORWARD_SLASH && line.charAt(i - 1) == FORWARD_SLASH)
-//                {
-//                    return line.substring(0, i - 1).trim();
-//                }
-//            }
-//        }
         line = line.replaceAll(" ", "");
         line = line.replaceAll("\t", "");
-
 
         int commentLocation = line.indexOf("//");
         if (commentLocation != -1)
         {
             line = line.substring(0, commentLocation);
         }
-
-
-
 
         return line;
     }

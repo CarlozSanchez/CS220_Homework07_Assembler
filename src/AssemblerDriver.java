@@ -1,5 +1,7 @@
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -11,35 +13,10 @@ public class AssemblerDriver
     public static void main(String[] args) //throws InvalidSyntaxException
     {
         ExecuteProgram();
-        //test();
-        // testSplit();
+        //AssemblerTester.test();
+        // AssemblerTester.testSplit();
+        //AssemblerTester.compareFiles();
 
-    }
-
-    private static void testSplit()
-    {
-
-        String str = "D*A";
-        String[] result = str.split("=");
-
-        for (int i = 0; i < result.length; i++)
-        {
-            System.out.println(i + ": " + result[i]);
-        }
-
-    }
-
-    private static void test()
-    {
-        //System.out.println(intTo16bitBinary(65535));
-        CodeModule codeModule = new CodeModule();
-        System.out.println(codeModule);
-
-        String mnemonic = "R1";
-        System.out.println("Translating  " + mnemonic + ": " + codeModule.label(mnemonic));
-
-        String test = "//Destination";
-        System.out.println(test.substring(2, 6));
     }
 
 
@@ -68,8 +45,6 @@ public class AssemblerDriver
             // throw new InvalidSyntaxException(e.getMessage());
             message = "\n!!!!!!!!!!!! " + e.getMessage() + " !!!!!!!!!!!!!!!!!\n";
             message += "\nWould you like to Try Again?(Y/N): ";
-
-
         }
 
         System.out.print(message);
@@ -84,36 +59,5 @@ public class AssemblerDriver
         {
             System.out.println("Goodbye!...");
         }
-
-        //List<String> testList = readFile("TestFile.txt");
-        // printList(testList);
     }
-
-
-    public static String process(String line)
-    {
-        String temp = line.trim();
-        return temp;
-    }
-
-    /***
-     * Method: Prints the contents of List for testing purposes.
-     * @param list The list to print contents
-     */
-    public static void printList(List<String> list)
-    {
-        try
-        {
-            for (String string : list)
-            {
-                System.out.println(string);
-            }
-        }
-        catch (Exception e)
-        {
-            System.out.println("Could not print List content");
-        }
-    }
-
-
 }

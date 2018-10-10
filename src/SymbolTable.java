@@ -1,3 +1,4 @@
+
 import java.util.HashMap;
 
 /**
@@ -6,23 +7,19 @@ import java.util.HashMap;
  *  + contains(symbold:String) : boolean
  *  + getAddress(symbol: String) : int
  */
-public class SymbolTableModule
+public class SymbolTable
 {
     private static final int INITIAL_ADDRESS = 64;
 
     private HashMap<String, String> symbolHashMap;
     private int memoryAddress;
 
-    public SymbolTableModule()
+    public SymbolTable()
     {
         symbolHashMap = new HashMap<String, String>();
         memoryAddress = INITIAL_ADDRESS;
     }
 
-    public boolean contains(String symbol)
-    {
-        return symbolHashMap.containsKey(symbol);
-    }
 
     /***
      * !!!!! fist this to find a memeory address that is not holding a value
@@ -50,12 +47,12 @@ public class SymbolTableModule
         }
     }
 
-    public String getAddress(String symbol)
+    public String label(String mnemonic)
     {
-        return symbolHashMap.get(symbol);
+        return symbolHashMap.get(mnemonic);
     }
 
-    public void addEntry(String label, int address)
+    public void put(String label, int address)
     {
         this.symbolHashMap.put(label, CodeModule.intTo16bitBinary(address));
     }
@@ -77,4 +74,5 @@ public class SymbolTableModule
 
         return sb.toString();
     }
+
 }
