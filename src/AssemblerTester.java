@@ -8,11 +8,10 @@ public class AssemblerTester
 {
 
 
-    public static void compareFiles(Scanner keyboard)
+    public static void compareFiles(String fileName)
     {
         System.out.print("Enter file name without extension that you want to compare: ");
 
-        String fileName = keyboard.nextLine();
 
         String result = fileName + ".hack equals " + fileName + ".comp ?: ";
         result += compareBinaryFilesEqual(fileName);
@@ -23,9 +22,8 @@ public class AssemblerTester
 
     private static boolean compareBinaryFilesEqual(String fileName)
     {
-        String root = "file/";
-        File fileA = new File(root + fileName + ".hack");
-        File fileB = new File(root + fileName + ".cmp");
+        File fileA = new File(fileName + ".hack");
+        File fileB = new File( fileName + ".cmp");
 
         ArrayList<String> listA = createArrayList(fileA);
         ArrayList<String> listB = createArrayList(fileB);
@@ -114,7 +112,7 @@ public class AssemblerTester
         System.out.println(codeModule);
 
         String mnemonic = "R1";
-        System.out.println("Translating  " + mnemonic + ": " + codeModule.label(mnemonic));
+       // System.out.println("Translating  " + mnemonic + ": " + codeModule.label(mnemonic));
 
         String test = "//Destination";
         System.out.println(test.substring(2, 6));

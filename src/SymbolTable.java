@@ -1,61 +1,69 @@
+// File: SymbolTable.java
+// Programmer: Carlos Sanchez
+// CS220 MW 3:30pm - 5:20pm
+// Last Modified: 10/11/2018
+// Version 2.00
 
 import java.util.HashMap;
 
 /**
- *  + SymbolTableModule()
- *  + addEntry(symbol:String, address:int) : void
- *  + contains(symbold:String) : boolean
- *  + getAddress(symbol: String) : int
+ * + SymbolTableModule()
+ * + addEntry(symbol:String, address:int) : void
+ * + contains(symbold:String) : boolean
+ * + getAddress(symbol: String) : int
  */
 public class SymbolTable
 {
-    private static final int INITIAL_ADDRESS = 64;
 
-    private HashMap<String, String> symbolHashMap;
-    private int memoryAddress;
-
-    public SymbolTable()
-    {
-        symbolHashMap = new HashMap<String, String>();
-        memoryAddress = INITIAL_ADDRESS;
-    }
-
+    /*** Field ************/
+    private HashMap<String, Integer> symbolHashMap;
 
     /***
-     * !!!!! fist this to find a memeory address that is not holding a value
-     * @param variable
-     * @return
+     * METHOD: default constructor.
      */
-    public String addVariable(String variable)
+    public SymbolTable()
     {
-        String result = symbolHashMap.get(variable);
+        symbolHashMap = new HashMap<String, Integer>();
+        addPredefineSymbols();
+    }
 
-        if(result == null)
+    public boolean contains(String symbol)
+    {
+        return symbolHashMap.containsKey(symbol);
+    }
+
+    public int getAddress(String symbol)
+    {
+        return symbolHashMap.get(symbol);
+    }
+
+    public boolean addEntry(String symbol, int address)
+    {
+        return this.symbolHashMap.put(symbol, address) != null;
+    }
+
+    private void addPredefineSymbols()
+    {
+        symbolHashMap.put("SP", 0);
+        symbolHashMap.put("LCL", 1);
+        symbolHashMap.put("ARG", 2);
+        symbolHashMap.put("THIS", 3);
+        symbolHashMap.put("THAT", 4);
+        symbolHashMap.put("SCREEN", 16384);
+        symbolHashMap.put("KBD", 24576);
+
+        addRegistersToTable();
+    }
+
+    private void addRegistersToTable()
+    {
+        for (int i = 0; i < 16; i++)
         {
-            String memAddressInBinary = CodeModule.intTo16bitBinary(memoryAddress);
-            symbolHashMap.put(variable, memAddressInBinary);
-            memoryAddress++;
-
-            // Debug
-            //System.out.println("adding to symbol mem " + memoryAddress + ": " + variable + " | "
-            //+ memAddressInBinary + "\n");
-            return memAddressInBinary;
-        }
-        else
-        {
-            return result;
+            String key = "R" + i;
+            symbolHashMap.put(key, i);
         }
     }
 
-    public String label(String mnemonic)
-    {
-        return symbolHashMap.get(mnemonic);
-    }
-
-    public void put(String label, int address)
-    {
-        this.symbolHashMap.put(label, CodeModule.intTo16bitBinary(address));
-    }
 
     @Override
     public String toString()

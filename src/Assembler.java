@@ -3,6 +3,8 @@
 
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.io.PrintWriter;
@@ -22,6 +24,7 @@ public class Assembler
     // close output file stream
     public static void main(String[] args)
     {
+
 
         String inputFileName, outputFileName;
         PrintWriter outputFile = null; //keep compiler happy
@@ -59,6 +62,15 @@ public class Assembler
         }
 
         // TODO: finish driver as algorithm describes
+
+        symbolTable = new SymbolTable();
+
+        firstPass(inputFileName, symbolTable);
+        secondPass(inputFileName, symbolTable, outputFile);
+
+        System.out.println("Process complete, output saved as " + outputFileName);
+        outputFile.close();
+
     }
 
     // TODO: march through the source code without generating any code
@@ -68,7 +80,35 @@ public class Assembler
     //HINT: when should rom address increase? What kind of commands?
     private static void firstPass(String inputFileName, SymbolTable symbolTable)
     {
+        Parser parser = null;
+        try
+        {
+            parser = new Parser(inputFileName);
+        }
+        catch (IOException e)
+        {
+            System.out.println("Unable to open file " + inputFileName + " Goodbye!!!");
+        }
 
+        System.out.println("Executing first pass...");
+
+
+        int romAddress = 0;
+
+        // While the inputfile contains more lines
+        while (parser.hasMoreCommmands())
+        {
+            parser.advance();
+
+            if (parser.getCommandType() == CommandType.L_COMMAND)
+            {
+                symbolTable.addEntry(parser.getSymbol(), romAddress);
+            }
+            else if (parser.getCommandType() == CommandType.A_COMMAND || parser.getCommandType() == CommandType.C_COMMAND)
+            {
+                romAddress++;
+            }
+        }
     }
 
     // TODO: march again through the source code and process each line:
@@ -85,6 +125,62 @@ public class Assembler
     // at? When should it increase?  What do you do with L commands and No commands?
     private static void secondPass(String inputFileName, SymbolTable symbolTable, PrintWriter outputFile)
     {
+        Parser parser = null;
 
+        Code code = new Code();
+
+        try
+        {
+            parser = new Parser(inputFileName);
+        }
+        catch (IOException e)
+        {
+            System.out.println("Unable to open file " + inputFileName + " Goodbye!!!");
+        }
+
+        System.out.println("Executing Second pass...");
+
+
+        int ramAddress = 16;
+
+        while (parser.hasMoreCommmands())
+        {
+            parser.advance();
+
+            if (parser.getCommandType() == CommandType.A_COMMAND)
+            {
+                try
+                {
+                    int address = Integer.parseInt(parser.getSymbol());
+                    outputFile.write("0" + Code.decimalTo15BitBinary(address) + "\n");
+                }
+                catch (NumberFormatException e)
+                {
+
+                    if (!symbolTable.contains(parser.getSymbol()))
+                    {
+                        symbolTable.addEntry(parser.getSymbol(), ramAddress);
+                        ramAddress++;
+                    }
+
+                    String addressStr = Code.decimalTo15BitBinary(symbolTable.getAddress(parser.getSymbol()));
+
+                    outputFile.write("0" + addressStr + "\n");
+                }
+
+            }
+            else if (parser.getCommandType() == CommandType.C_COMMAND)
+            {
+                // System.out.print("Command C on line " + parser.getLineNumber());
+                //System.out.println(" | " + parser.getComp() + " | " + parser.getDest() + " | " + parser.getJump());
+                String instruction = "111";
+
+                String comp = code.comp(parser.getComp());
+                String dest = code.dest(parser.getDest());
+                String jump = code.jump(parser.getJump());
+
+                outputFile.write(instruction + comp + dest + jump + "\n");
+            }
+        }
     }
 }

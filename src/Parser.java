@@ -1,54 +1,35 @@
+// File: Parser.java
 // Programmer: Carlos Sanchez
 // CS220 MW 3:30pm - 5:20pm
-// Last Modified: 10/7/2018
+// Last Modified: 10/11/2018
 // Version 2.00
 
 
-import java.io.*;
-import java.net.CookieManager;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
 
-/***
- *  + ParserModule() :
- *  + ParserModule(fileName : String)
- *  + hasMoreCommands() : boolean
- *  + advance() : void
- *  + commandType : enum:command
- *  + symbol() : String
- *  + dest() : String
- *  + comp() : String
- *  + jump() : String
- */
-
-enum CommandType
+public class Parser
 {
-    A_COMMAND, C_COMMAND, L_COMMAND, N_COMMAND
-}
+    /*** CLASS FIELD ********/
+    private File file;
+    private Scanner inputStream;
+    private int lineNumber;
+    private String rawLine;
 
-public class ParserModule
-{
-    File file;
-
-    // Added stuff
-    Scanner inputStream;
-    int lineNumber;
-    String rawLine;
-
-    String cleanLine;
-    CommandType commandType;
-    String symbol;
-    String destMnemonic;
-    String compMnemonic;
-    String jumpMnemonic;
+    private String cleanLine;
+    private CommandType commandType;
+    private String symbol;
+    private String destMnemonic;
+    private String compMnemonic;
+    private String jumpMnemonic;
 
 
     /***
      * fULL CONSTRUCTOR:
      * @param fileName
      */
-    public ParserModule(String fileName) throws IOException
+    public Parser(String fileName) throws IOException
     {
         file = new File(fileName);
         inputStream = new Scanner(file);
@@ -74,7 +55,7 @@ public class ParserModule
      */
     public boolean hasMoreCommmands()
     {
-        if ( inputStream.hasNextLine())
+        if (inputStream.hasNextLine())
         {
             return true;
         }
@@ -92,12 +73,11 @@ public class ParserModule
      */
     public void advance()
     {
+        resetFields();
         rawLine = inputStream.nextLine();
         cleanLine();
         parseCommandType();
         parse();
-
-
         lineNumber++;
     }
 
@@ -153,7 +133,7 @@ public class ParserModule
 
     private void parse()
     {
-        switch (commandType)
+        switch (this.commandType)
         {
             case N_COMMAND:
                 // Do nothing
@@ -181,11 +161,11 @@ public class ParserModule
 
     private void parseSymbol()
     {
-        if(commandType == CommandType.A_COMMAND)
+        if (commandType == CommandType.A_COMMAND)
         {
             symbol = cleanLine.substring(1, cleanLine.length());
         }
-        else if(commandType == CommandType.L_COMMAND)
+        else if (commandType == CommandType.L_COMMAND)
         {
             symbol = cleanLine.substring(1, cleanLine.length() - 1);
         }
@@ -217,11 +197,11 @@ public class ParserModule
 
         if (lineSplit.length == 2)
         {
-            compMnemonic = lineSplit[0];
+            destMnemonic = lineSplit[0];
         }
         else
         {
-            compMnemonic = "null";
+            destMnemonic = "null";
         }
     }
 
@@ -235,7 +215,7 @@ public class ParserModule
         }
         else
         {
-            compMnemonic = "null";
+            jumpMnemonic = "null";
         }
     }
 

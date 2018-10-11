@@ -1,7 +1,15 @@
+// File: Code.java
+// Programmer: Carlos Sanchez
+// CS220 MW 3:30pm - 5:20pm
+// Last Modified: 10/11/2018
+// Version 2.00
+
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
+
 
 /**
  * + dest(input : String) : String
@@ -10,14 +18,23 @@ import java.util.Scanner;
  */
 
 
-public class CodeModule
+enum WriteState
 {
+    DEST, JUMP, COMP
+}
+
+
+public class Code
+{
+    private final String CODE_TABLE_FILE_NAME = "CodeTable.txt";
+
+
     private HashMap<String, String> destHashMap;
     private HashMap<String, String> compHashMap;
     private HashMap<String, String> jumpHashMap;
 
 
-    public CodeModule()
+    public Code()
     {
         destHashMap = new HashMap<String, String>();
         compHashMap = new HashMap<String, String>();
@@ -40,12 +57,12 @@ public class CodeModule
         return jumpHashMap.get(mnemonic);
     }
 
-
-
+    /***
+     * METHOD: Reads in CodeTable text file and puts KV pair of Symbol and Binaray equivalent.
+     */
     private void fillHashTable()
     {
-        String fileLocation = "file/AssemblyCodeModule.txt";
-        File file = new File(fileLocation);
+        File file = new File(CODE_TABLE_FILE_NAME);
         Scanner inputStream = null;
         String line;
 
@@ -110,8 +127,6 @@ public class CodeModule
     }
 
 
-
-
     /**
      * Method: Converts an Integer value into it's equivalent 15-bit binary value.
      * Range of 0 - 65,535
@@ -119,13 +134,13 @@ public class CodeModule
      * @param
      * @return
      */
-    public static String intTo15bitBinary(int toConvert)
+    public static String decimalTo15BitBinary(int decimal)
     {
         StringBuilder str = new StringBuilder();
 
         for (int i = 0; i < 15; i++)
         {
-            if (toConvert % 2 == 0)
+            if (decimal % 2 == 0)
             {
                 str.append(0);
             }
@@ -134,7 +149,7 @@ public class CodeModule
                 str.append(1);
             }
 
-            toConvert /= 2;
+            decimal /= 2;
         }
 
         return str.reverse().toString();

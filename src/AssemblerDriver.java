@@ -28,24 +28,25 @@ public class AssemblerDriver
         System.out.print("Enter Assembly(.asm) File to compile: ");
         String input = keyboard.nextLine();
 
-        ParserModule parseModule = new ParserModule(input);
+        ParserModule parseModule  = null;
 
         try
         {
-            parseModule.assembleFile();
+            parseModule = new ParserModule(input);
+           // parseModule.assembleFile();
             message = "Assemble another .asm file?(Y/N): ";
         }
         catch (IOException e)
         {
             message = "Unable to read from " + input + ", Try again?(Y/N): ";
         }
-        catch (InvalidSyntaxException e)
-        {
-            // message = "Would you like to Try again(Y/N): ";
-            // throw new InvalidSyntaxException(e.getMessage());
-            message = "\n!!!!!!!!!!!! " + e.getMessage() + " !!!!!!!!!!!!!!!!!\n";
-            message += "\nWould you like to Try Again?(Y/N): ";
-        }
+//        catch (InvalidSyntaxException e)
+//        {
+//            // message = "Would you like to Try again(Y/N): ";
+//            // throw new InvalidSyntaxException(e.getMessage());
+//            message = "\n!!!!!!!!!!!! " + e.getMessage() + " !!!!!!!!!!!!!!!!!\n";
+//            message += "\nWould you like to Try Again?(Y/N): ";
+//        }
 
         System.out.print(message);
         input = keyboard.nextLine();
