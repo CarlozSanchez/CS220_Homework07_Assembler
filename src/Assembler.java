@@ -1,4 +1,10 @@
-//Author info here
+// File: Parser.java
+// Programmer: Carlos Sanchez
+// CS220 MW 3:30pm - 5:20pm
+// Last Modified: 10/11/2018
+// Version 2.00
+
+
 //TODO: don't forget to document each method in all classes!
 
 import java.io.FileOutputStream;
@@ -173,6 +179,7 @@ public class Assembler
             {
                 // System.out.print("Command C on line " + parser.getLineNumber());
                 //System.out.println(" | " + parser.getComp() + " | " + parser.getDest() + " | " + parser.getJump());
+
                 String instruction = "111";
 
                 String comp = code.comp(parser.getComp());
