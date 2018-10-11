@@ -9,9 +9,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
+/***
+ * Parser.java - Used for reading a given file name and parsing the contents of
+ * each line into corresponding class values.
+ */
 public class Parser
 {
-    /*** CLASS FIELD ********/
+    /********* VARIABLES ********/
     private File file;
     private Scanner inputStream;
     private int lineNumber;
@@ -26,8 +30,10 @@ public class Parser
 
 
     /***
-     * fULL CONSTRUCTOR:
-     * @param fileName
+     * FULL CONSTRUCTOR: opens input file/stream and prepares to parse.
+     * PRECONDITION: provided file is ASM file.
+     * POSTCONDITION: if file can't be opened, ends program w/ error message.
+     * @param fileName The file to open.
      */
     public Parser(String fileName) throws IOException
     {
@@ -38,6 +44,10 @@ public class Parser
         resetFields();
     }
 
+    /***
+     * HELPER: resets data fields to initial values, used by contructor and advance().
+     * POSTCONDITION: data fields are reset to initial values.
+     */
     private void resetFields()
     {
         rawLine = "";
@@ -51,7 +61,8 @@ public class Parser
 
     /***
      * METHOD: checks if current input stream has next line to read.
-     * @return returns false if we reach end of file, true if next line is available.
+     * PRECONDITION: file stream is open.
+     * @return returns true if more commands, else closes stream.
      */
     public boolean hasMoreCommmands()
     {
@@ -68,8 +79,9 @@ public class Parser
     }
 
     /**
-     * METHOD: advances to the next line in input stream and updates the class variables
-     * based on Commandtype read.
+     * METHOD: reads next line rom file and parses it into instance variables.
+     * PRECONDITION: file stream is open, called only if hasMoreCommands().
+     * POSTCONDITION: current instruction parts put into instance vars.
      */
     public void advance()
     {
@@ -83,9 +95,9 @@ public class Parser
 
 
     /***
-     * Method: Removes // comments from a given line.
-     * @param
-     * @return
+     * METHOD: cleans rawLine by removing whitespace and comments.
+     * PRECONDITION: advance() is called so rawLine has string to clean.
+     * POSTCONDITION: cleanLine is updated with contents of rawLine without comments or whitespace.
      */
     private void cleanLine()
     {
@@ -102,6 +114,7 @@ public class Parser
 
         cleanLine = line;
     }
+
 
     private void parseCommandType()
     {
@@ -131,6 +144,11 @@ public class Parser
 
     }
 
+    /***
+     * DESCRIPTION: helper method parses line depending on instruction type.
+     * PRECONDITION: advance() called so cleanLine has value.
+     * POSTCONDITION: appropriate parts (instance vars) of instruction filled.
+     */
     private void parse()
     {
         switch (this.commandType)
@@ -171,6 +189,11 @@ public class Parser
         }
     }
 
+    /***
+     * DESCRIPTION: helper method parses line to get comp part.
+     * PRECONDITION: advance() called so cleanLine hash value, call for C-instructions only.
+     * POSTCONDITION: compMnemonic set to appropriate value form instruction.
+     */
     private void parseComp()
     {
         String[] splitOnAssignment = cleanLine.split("=");
@@ -191,6 +214,11 @@ public class Parser
 
     }
 
+    /***
+     * METHOD: helper method parses line to get dest part.
+     * PRECONDITION: advance() called so cleanLine has values, call for C-instruction only.
+     * POSTCONDITION: destMnemonic set to appropriate value from instruction.
+     */
     private void parseDest()
     {
         String[] lineSplit = cleanLine.split("=");
@@ -205,6 +233,11 @@ public class Parser
         }
     }
 
+    /***
+     * DESCRIPTION: helper method parses lnie to get jump part.
+     * PRECONDITION: advance() called so cleanLine has value, call for C-instructions only.
+     * POSTCONDITION: jumpMnemonic set to appropriate value from instruction.
+     */
     private void parseJump()
     {
         String[] lineSplit = cleanLine.split(";");
@@ -222,26 +255,51 @@ public class Parser
 
     /////////////////////////////////  Getters //////////////////////////////////
 
+    /***
+     * METHOD: getter for command type.
+     * PRECONDITION: cleanLine has been parsed (advance was called)
+     * @return returns char for command type (N/A/C/L)
+     */
     public CommandType getCommandType()
     {
         return this.commandType;
     }
 
+    /***
+     * METHOD: getter for symbol type.
+     * PRECONDITION: cleanLine has been parsed (advance was called), call for labels only ( use getCommandType())
+     * @return returns string for symbol name.
+     */
     public String getSymbol()
     {
         return this.symbol;
     }
 
+    /***
+     * METHOD: getter for dest part of C-instruction
+     * PRECONDITION: cleanLine has been parsed (advance was called), call for C-instructions only (use getCommandType())
+     * @return returns mnemonic (ASM symbol) for dest part.
+     */
     public String getDest()
     {
         return this.destMnemonic;
     }
 
+    /***
+     * DESCRIPTION: getter for comp part of C-instruction.
+     * PRECONDITION: cleanLine has been parsed (advance was called), call for C-instructions only (use getCommandType())
+     * @return mnemonic (ASM symbol) for comp part.
+     */
     public String getComp()
     {
         return this.compMnemonic;
     }
 
+    /***
+     * DESCRIPTION: getter for jump part of C-instruction.
+     * PRECONDITION: cleanLine hash been parsed ( advance was called), call for C-instruction only (use getCommandType())
+     * @return mnemonic (ASM symbol) for jump part.
+     */
     public String getJump()
     {
         return this.jumpMnemonic;
@@ -249,21 +307,41 @@ public class Parser
 
     /////////////////////////////////////////// FOR DEBUGGIN ////////////////////////////////////////
 
+    /***
+     * DESCRIPTION: getter for string version of command type ( debuggin)
+     * PRECONDITION: advance(0 and parse() have been called.
+     * @return string version of command type.
+     */
     public String getCommandTypeString()
     {
         return this.commandType.toString();
     }
 
+    /***
+     * DESCRIPTION: getter for rawLine for file (debugging)
+     * PRECONDITION: advance() was called to put value from file in here.
+     * @return string of current original line from file.
+     */
     public String getRawLine()
     {
         return this.rawLine;
     }
 
+    /***
+     * DESCRIPTION: getter for cleanLine from file (debuggin)
+     * PRECONDITION: advance() and cleanLine() were called
+     * @return string of current clean instruction from file.
+     */
     public String getCleanLine()
     {
         return this.cleanLine;
     }
 
+    /***
+     * DESCRITION: getter for lineNumber (debugging)
+     * PRECONDITION: n/a
+     * @return line number currently being processed from file.
+     */
     public int getLineNumber()
     {
         return this.lineNumber;
