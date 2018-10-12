@@ -30,8 +30,6 @@ public class Assembler
     // close output file stream
     public static void main(String[] args)
     {
-
-
         String inputFileName, outputFileName;
         PrintWriter outputFile = null; //keep compiler happy
         SymbolTable symbolTable;
@@ -76,8 +74,6 @@ public class Assembler
 
         System.out.println("Process complete, output saved as " + outputFileName);
         outputFile.close();
-
-        AssemblerTester.compareFiles("pong");
     }
 
     // TODO: march through the source code without generating any code
@@ -99,25 +95,23 @@ public class Assembler
 
         System.out.println("Executing first pass...");
 
-
         int romAddress = 0;
         boolean entryAdded;
 
-        // While the inputfile contains more lines
         while (parser.hasMoreCommmands())
         {
             parser.advance();
 
             if (parser.getCommandType() == CommandType.L_COMMAND)
             {
-               entryAdded =  symbolTable.addEntry(parser.getSymbol(), romAddress);
+                entryAdded = symbolTable.addEntry(parser.getSymbol(), romAddress);
 
-               if(entryAdded == false)
-               {
-                   System.out.println("Invalid Syntax detected: \"" + parser.getSymbol() + "\" at Line " + parser.getLineNumber() + ": " + parser.getRawLine());
-                   System.out.println("Exiting program");
-                   System.exit(0);
-               }
+                if (entryAdded == false)
+                {
+                    System.out.println("Invalid Syntax detected: \"" + parser.getSymbol() + "\" at Line " + parser.getLineNumber() + ": " + parser.getRawLine());
+                    System.out.println("Exiting program");
+                    System.exit(0);
+                }
             }
             else if (parser.getCommandType() == CommandType.A_COMMAND || parser.getCommandType() == CommandType.C_COMMAND)
             {
@@ -171,24 +165,26 @@ public class Assembler
                 }
                 catch (NumberFormatException e)
                 {
-
                     if (!symbolTable.contains(parser.getSymbol()))
                     {
-                        symbolTable.addEntry(parser.getSymbol(), ramAddress);
+                        boolean entryAdded = symbolTable.addEntry(parser.getSymbol(), ramAddress);
+
+                        if (entryAdded == false)
+                        {
+                            System.out.println("Invalid Syntax detected: \"" + parser.getSymbol() + "\" at Line " + parser.getLineNumber() + ": " + parser.getRawLine());
+                            System.out.println("Exiting program");
+                            System.exit(0);
+                        }
+
                         ramAddress++;
                     }
 
                     String addressStr = Code.decimalTo15BitBinary(symbolTable.getAddress(parser.getSymbol()));
-
                     outputFile.write("0" + addressStr + "\n");
                 }
-
             }
             else if (parser.getCommandType() == CommandType.C_COMMAND)
             {
-                // System.out.print("Command C on line " + parser.getLineNumber());
-                //System.out.println(" | " + parser.getComp() + " | " + parser.getDest() + " | " + parser.getJump());
-
                 String instruction = "111";
 
                 String comp = code.getComp(parser.getComp());

@@ -43,7 +43,7 @@ public class SymbolTable
      */
     public boolean addEntry(String symbol, int address)
     {
-        if(isValidName(symbol))
+        if (isValidName(symbol))
         {
             this.symbolHashMap.put(symbol, address);
             return true;
@@ -57,6 +57,7 @@ public class SymbolTable
 
     /**
      * METHOD: Checks if symbol given contains valid characters.
+     *
      * @param symbol The symbol to validated.
      * @return false if first character in symbol is a number or rest of symbol contains invalid characters, otherwise true.
      */
@@ -66,20 +67,20 @@ public class SymbolTable
         String invalidCharacters = " <>,;'!@#%^&*()-=+/\\\b\n\t\r\f\"\\";
 
         // Check if first character in symbol is a number
-        for(int i = 0; i < invalidFirstCharacter.length(); i++)
+        for (int i = 0; i < invalidFirstCharacter.length(); i++)
         {
-            if(symbol.charAt(0) == invalidFirstCharacter.charAt(i))
+            if (symbol.charAt(0) == invalidFirstCharacter.charAt(i))
             {
                 return false;
             }
         }
 
         // Check the remaining characters in symbol are valid
-        for(int i = 0; i < symbol.length(); i++)
+        for (int i = 0; i < symbol.length(); i++)
         {
-            for(int j = 0; j < invalidCharacters.length(); j++)
+            for (int j = 0; j < invalidCharacters.length(); j++)
             {
-                if(symbol.charAt(i) == invalidCharacters.charAt(j))
+                if (symbol.charAt(i) == invalidCharacters.charAt(j))
                 {
                     return false;
                 }
