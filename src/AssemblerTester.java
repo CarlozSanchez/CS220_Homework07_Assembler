@@ -108,7 +108,7 @@ public class AssemblerTester
     public static void test()
     {
         //System.out.println(intTo16bitBinary(65535));
-        CodeModule codeModule = new CodeModule();
+        Code codeModule = new Code();
         System.out.println(codeModule);
 
         String mnemonic = "R1";

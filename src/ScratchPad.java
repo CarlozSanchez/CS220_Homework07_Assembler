@@ -112,7 +112,7 @@ public class ScratchPad
 //        }
 //    }
 
-    private String processC(String line, Code code) throws InvalidSyntaxException
+    private String processC(String line, Code code) //throws InvalidSyntaxException
     {
         String instruction = "111";
         String comp;
@@ -123,8 +123,10 @@ public class ScratchPad
         // Process a computation Command
         if (lineSplit.length == 2)
         {
-            dest = code.dest(lineSplit[0]);
-            comp = code.comp(lineSplit[1]);
+
+            dest = code.getDest(lineSplit[0]);
+            comp = code.getComp(lineSplit[1]);
+
 
             if (dest != null && comp != null)
             {
@@ -136,8 +138,8 @@ public class ScratchPad
         lineSplit = line.split(";");
         if (lineSplit.length == 2)
         {
-            comp = code.comp(lineSplit[0]);
-            jump = code.jump(lineSplit[1]);
+            comp = code.getComp(lineSplit[0]);
+            jump = code.getJump(lineSplit[1]);
 
             if (dest != null && jump != null)
             {
@@ -145,7 +147,8 @@ public class ScratchPad
             }
         }
 
-        throw new InvalidSyntaxException();
+       // throw new InvalidSyntaxException();
+        return line;
     }
 
 

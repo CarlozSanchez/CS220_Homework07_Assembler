@@ -59,7 +59,7 @@ public class Code
      * @param mnemonic the mnemonic to convert.
      * @return returns string of bits if valid, else return null.
      */
-    public String gestDest(String mnemonic)
+    public String getDest(String mnemonic)
     {
         return destHashMap.get(mnemonic);
     }

@@ -4,10 +4,10 @@
 // Last Modified: 10/11/2018
 // Version 2.00
 
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
+
 
 /***
  * Parser.java - Used for reading a given file name and parsing the contents of
@@ -346,6 +346,9 @@ public class Parser
     {
         return this.lineNumber;
     }
+}
 
-
+enum CommandType
+{
+    A_COMMAND, C_COMMAND, L_COMMAND, N_COMMAND
 }

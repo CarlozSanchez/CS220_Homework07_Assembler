@@ -77,6 +77,7 @@ public class Assembler
         System.out.println("Process complete, output saved as " + outputFileName);
         outputFile.close();
 
+        AssemblerTester.compareFiles("pong");
     }
 
     // TODO: march through the source code without generating any code
@@ -100,6 +101,7 @@ public class Assembler
 
 
         int romAddress = 0;
+        boolean entryAdded;
 
         // While the inputfile contains more lines
         while (parser.hasMoreCommmands())
@@ -108,7 +110,14 @@ public class Assembler
 
             if (parser.getCommandType() == CommandType.L_COMMAND)
             {
-                symbolTable.addEntry(parser.getSymbol(), romAddress);
+               entryAdded =  symbolTable.addEntry(parser.getSymbol(), romAddress);
+
+               if(entryAdded == false)
+               {
+                   System.out.println("Invalid Syntax detected: \"" + parser.getSymbol() + "\" at Line " + parser.getLineNumber() + ": " + parser.getRawLine());
+                   System.out.println("Exiting program");
+                   System.exit(0);
+               }
             }
             else if (parser.getCommandType() == CommandType.A_COMMAND || parser.getCommandType() == CommandType.C_COMMAND)
             {
@@ -182,9 +191,9 @@ public class Assembler
 
                 String instruction = "111";
 
-                String comp = code.comp(parser.getComp());
-                String dest = code.dest(parser.getDest());
-                String jump = code.jump(parser.getJump());
+                String comp = code.getComp(parser.getComp());
+                String dest = code.getDest(parser.getDest());
+                String jump = code.getJump(parser.getJump());
 
                 outputFile.write(instruction + comp + dest + jump + "\n");
             }

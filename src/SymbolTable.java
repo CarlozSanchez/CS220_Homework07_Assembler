@@ -39,11 +39,53 @@ public class SymbolTable
      * PRECONDITION: symbol/address pair not in hashmap(check contains() 1st).
      * @param symbol the symbol to add as key.
      * @param address the address to add as value.
-     * @return returns true if addes, false if illegal name;
+     * @return returns true if address, false if illegal name;
      */
     public boolean addEntry(String symbol, int address)
     {
-        return this.symbolHashMap.put(symbol, address) != null;
+        if(isValidName(symbol))
+        {
+            this.symbolHashMap.put(symbol, address);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
+    /**
+     * METHOD: Checks if symbol given contains valid characters.
+     * @param symbol The symbol to validated.
+     * @return false if first character in symbol is a number or rest of symbol contains invalid characters, otherwise true.
+     */
+    public static boolean isValidName(String symbol)
+    {
+        String invalidFirstCharacter = "0123456789";
+        String invalidCharacters = " <>,;'!@#%^&*()-=+/\\\b\n\t\r\f\"\\";
+
+        // Check if first character in symbol is a number
+        for(int i = 0; i < invalidFirstCharacter.length(); i++)
+        {
+            if(symbol.charAt(0) == invalidFirstCharacter.charAt(i))
+            {
+                return false;
+            }
+        }
+
+        // Check the remaining characters in symbol are valid
+        for(int i = 0; i < symbol.length(); i++)
+        {
+            for(int j = 0; j < invalidCharacters.length(); j++)
+            {
+                if(symbol.charAt(i) == invalidCharacters.charAt(j))
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /***
