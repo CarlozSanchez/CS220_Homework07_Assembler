@@ -135,7 +135,6 @@ public class Assembler
     private static void secondPass(String inputFileName, SymbolTable symbolTable, PrintWriter outputFile)
     {
         Parser parser = null;
-
         Code code = new Code();
 
         try
@@ -171,7 +170,8 @@ public class Assembler
 
                         if (entryAdded == false)
                         {
-                            System.out.println("Invalid Syntax detected: \"" + parser.getSymbol() + "\" at Line " + parser.getLineNumber() + ": " + parser.getRawLine());
+                            System.out.println("Invalid Syntax detected: \"" + parser.getSymbol() + "\" at Line "
+                                    + parser.getLineNumber() + ": " + parser.getRawLine());
                             System.out.println("Exiting program");
                             System.exit(0);
                         }
